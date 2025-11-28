@@ -191,14 +191,38 @@
    */
   function loadGiscus() {
     const container = document.getElementById("giscus-container");
-    if (!container) return;
+    if (!container) {
+      console.warn("Giscus: giscus-container를 찾을 수 없습니다.");
+      return;
+    }
+
+    // 이미 스크립트가 로드되어 있는지 확인
+    if (container.querySelector("script")) {
+      console.log("Giscus: 이미 로드되어 있습니다.");
+      return;
+    }
+
+    // 로컬 환경에서는 경고만 표시 (GitHub Pages에서만 작동)
+    if (
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1"
+    ) {
+      container.innerHTML = `
+        <div style="padding: 2rem; text-align: center; color: var(--color-text-muted); border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-bg-secondary);">
+          <p style="margin-bottom: 0.5rem;">💬 댓글 시스템은 GitHub Pages에 배포된 후에만 작동합니다.</p>
+          <p style="font-size: 0.875rem; margin: 0;">로컬 환경에서는 댓글을 확인할 수 없습니다.</p>
+        </div>
+      `;
+      console.log("Giscus: 로컬 환경에서는 댓글이 표시되지 않습니다.");
+      return;
+    }
 
     const script = document.createElement("script");
     script.src = "https://giscus.app/client.js";
     script.setAttribute("data-repo", "YAREUGO/YAREUGO.github.io");
-    script.setAttribute("data-repo-id", "R_kgDOQec19g"); // TODO: 실제 값으로 교체
+    script.setAttribute("data-repo-id", "R_kgDOQec19g");
     script.setAttribute("data-category", "General");
-    script.setAttribute("data-category-id", "DIC_kwDOQec19s4CzI0A"); // TODO: 실제 값으로 교체
+    script.setAttribute("data-category-id", "DIC_kwDOQec19s4CzI0A");
     script.setAttribute("data-mapping", "pathname");
     script.setAttribute("data-strict", "0");
     script.setAttribute("data-reactions-enabled", "1");
@@ -215,7 +239,19 @@
     script.crossOrigin = "anonymous";
     script.async = true;
 
+    // 에러 핸들링
+    script.onerror = function () {
+      console.error("Giscus: 스크립트 로드 실패");
+      container.innerHTML = `
+        <div style="padding: 2rem; text-align: center; color: var(--color-text-muted); border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-bg-secondary);">
+          <p style="margin-bottom: 0.5rem;">⚠️ 댓글 시스템을 불러올 수 없습니다.</p>
+          <p style="font-size: 0.875rem; margin: 0;">GitHub Discussions가 활성화되어 있고 Giscus 앱이 설치되어 있는지 확인하세요.</p>
+        </div>
+      `;
+    };
+
     container.appendChild(script);
+    console.log("Giscus: 댓글 스크립트 로드 중...");
   }
 
   /**
