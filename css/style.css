@@ -565,6 +565,30 @@ button {
   margin-bottom: var(--spacing-lg);
 }
 
+/* Giscus 댓글 시스템 스타일 개선 */
+#giscus-container {
+  margin-top: var(--spacing-lg);
+  position: relative;
+}
+
+/* Giscus iframe 스타일 */
+#giscus-container .giscus-frame {
+  min-height: 400px;
+  width: 100%;
+  border: none;
+  display: block;
+}
+
+/* 댓글 섹션 레이아웃 개선 */
+.comments-section {
+  position: relative;
+}
+
+/* 댓글 제목과 Giscus 컨테이너 사이 간격 */
+.comments-title + #giscus-container {
+  margin-top: var(--spacing-md);
+}
+
 /* ===================================
    Footer
    =================================== */
